@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: gunicorn livestream.app:app --log-file -
