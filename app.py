@@ -1,8 +1,43 @@
 from flask import Flask, render_template, Response
 from flask_ngrok import run_with_ngrok
 import cv2
+try:
+    from flask import Flask,render_template,url_for,request,redirect, make_response
+    import os
+    import random
+    import json
+    from time import time
+    from random import random
+    from flask import Flask, render_template, make_response
+    from flask_dance.contrib.github import make_github_blueprint, github
+except Exception as e:
+    print("Some Modules are Missings {}".format(e))
 
 app = Flask(__name__)
+run_with_ngrok(app)
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+app.config["SECRET_KEY"]="SECRET KEY"
+
+github_blueprint = make_github_blueprint(client_id='177beaa9b25e9c87ee76',
+                                         client_secret='428d7ed3451f8ba1ba5c289921996bbcef550964')
+
+app.register_blueprint(github_blueprint, url_prefix='/github_login')
+
+
+@app.route('/')
+def github_login():
+
+    if not github.authorized:
+        return redirect(url_for('github.login'))
+    else:
+        account_info = github.get('/user')
+        if account_info.ok:
+            account_info_json = account_info.json()
+            return render_template('index.html')
+
+    return '<h1>Request failed!</h1>'
 
 camera = cv2.VideoCapture(0)  # use 0 for web camera
 
