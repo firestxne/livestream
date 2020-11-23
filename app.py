@@ -3,7 +3,6 @@ from flask_ngrok import run_with_ngrok
 import cv2
 
 app = Flask(__name__)
-run_with_ngrok(app)
 
 camera = cv2.VideoCapture(0)  # use 0 for web camera
 
